@@ -1,13 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
-    <script type="text/babel" >
-        "use strict";
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+  <script type="text/babel">
+    "use strict";
+
+
+
+    let totalScore;
+    let socket;
+    let myScore = 0;
+    let incrementValue = 5;
+
+    const generateScore = () =>{
+      myScore += incrementValue;
+      socket.emit('updateScore', incrementValue)
+    };
+
+
+    const updatePage = (data) =>{
+      totalScore.innerText = data;
+      
+    }
     
-    </script>
+
+
+
+  
+    
+    const init = () => {
+      totalScore = document.querySelector("#totalScore");
+      totalScore.innerText = "0"; //default value
+      
+      socket = io.connect();
+      
+      socket.on('connect',() =>{
+        setInterval(generateScore, 500);
+        
+      });
+      
+      socket.on('updated', updatePage);
+    }
+    
+
+    window.onload = init;
+  </script>
 </head>
+
 <body>
+  <h1>Total Score: <span id="totalScore"></span></h1>
+  </div>
 
 </body>
+
 </html>
